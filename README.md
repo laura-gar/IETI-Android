@@ -1,9 +1,7 @@
 # IETI - Android
 
-## App Logo
+## Get tasks
 
-![](img/01-app-icon.png)
+![](img/03-get-tasks.png)
 
-## Running App
 
-![](img/02-running-app.png)

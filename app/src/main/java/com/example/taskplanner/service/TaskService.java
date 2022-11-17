@@ -11,6 +11,4 @@ public interface TaskService {
 
     @GET("tasks")
     Call<List<TaskDto>> getTasks();
-
-
 }

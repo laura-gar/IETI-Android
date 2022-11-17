@@ -4,11 +4,18 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.widget.TextView;
 
+import com.example.taskplanner.auth.AuthInterceptor;
 import com.example.taskplanner.dto.TaskDto;
 import com.example.taskplanner.service.TaskService;
+import com.example.taskplanner.service.UserService;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.List;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -24,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mJsonTxtView = findViewById(R.id.taskview);
-
         getTask();
     }
 
@@ -35,9 +41,7 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         TaskService taskService = retrofit.create(TaskService.class);
-
         Call<List<TaskDto>> call = taskService.getTasks();
-
         call.enqueue(new Callback<List<TaskDto>>() {
             @Override
             public void onResponse(Call<List<TaskDto>> call, Response<List<TaskDto>> response) {
@@ -53,10 +57,9 @@ public class MainActivity extends AppCompatActivity {
                     content += "Name:" + taskDto.getName() + "\n";
                     content += "Description:" + taskDto.getDescription() + "\n";
                     content += "Status" + taskDto.getStatus() + "\n";
-                    content += "DueDate" + taskDto.getDueDate();
+                    content += "DueDate" + taskDto.getDueDate() + "\n";
 
                     mJsonTxtView.append(content);
-
                 }
             }
 
