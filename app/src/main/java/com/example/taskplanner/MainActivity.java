@@ -13,6 +13,10 @@ import com.google.gson.GsonBuilder;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
+import dagger.hilt.android.HiltAndroidApp;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -22,9 +26,13 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+@AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
 
     private TextView mJsonTxtView;
+
+    @Inject
+    Retrofit retrofit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -35,10 +43,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getTask() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://ieti-tasks.herokuapp.com/api/v1/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("https://ieti-tasks.herokuapp.com/api/v1/")
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .build();
+
+        System.out.println(retrofit);
 
         TaskService taskService = retrofit.create(TaskService.class);
         Call<List<TaskDto>> call = taskService.getTasks();
