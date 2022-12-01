@@ -4,27 +4,24 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.widget.TextView;
 
-import com.example.taskplanner.auth.AuthInterceptor;
+import com.example.taskplanner.dao.TaskDAO;
+import com.example.taskplanner.dao.TaskDAO_Impl;
+import com.example.taskplanner.dao.UserDAO;
 import com.example.taskplanner.dto.TaskDto;
+import com.example.taskplanner.entities.TaskEntity;
 import com.example.taskplanner.service.TaskService;
-import com.example.taskplanner.service.UserService;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+
+import org.modelmapper.ModelMapper;
 
 import java.util.List;
-
 import javax.inject.Inject;
 
-import dagger.hilt.android.AndroidEntryPoint;
-import dagger.hilt.android.HiltAndroidApp;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+
+import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
@@ -34,22 +31,24 @@ public class MainActivity extends AppCompatActivity {
     @Inject
     Retrofit retrofit;
 
+    @Inject
+    UserDAO userDAO;
+
+    @Inject
+    TaskDAO taskDAO;
+
+    private ModelMapper modelMapper = new ModelMapper();
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mJsonTxtView = findViewById(R.id.taskview);
         getTask();
+
     }
 
     private void getTask() {
-//        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("https://ieti-tasks.herokuapp.com/api/v1/")
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .build();
-
-        System.out.println(retrofit);
-
         TaskService taskService = retrofit.create(TaskService.class);
         Call<List<TaskDto>> call = taskService.getTasks();
         call.enqueue(new Callback<List<TaskDto>>() {
@@ -62,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
                 List<TaskDto> tasksList = response.body();
                 for(TaskDto taskDto: tasksList ){
+                taskDAO.insert(modelMapper.map(taskDto, TaskEntity.class));
                     String content = "";
                     content += "Id:" + taskDto.getId() + "\n";
                     content += "Name:" + taskDto.getName() + "\n";
